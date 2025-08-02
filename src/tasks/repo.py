@@ -1,4 +1,4 @@
-from typing import Sequence, Any
+from typing import Any, Sequence
 
 from core.repo import BaseRepo
 from tasks.models import Task
@@ -28,21 +28,25 @@ class TaskRepo(BaseRepo):
 
     ### SPECIFIC ###
     async def get_by_folder(self, folder_id: int) -> Sequence[Task]:
-        return await self._get_model_all(self.model, conditions=[self.model.folder_id == folder_id])
+        return await self._get_model_all(
+            self.model, conditions=[self.model.folder_id == folder_id]
+        )
 
     async def get_by_user(self, user_id: int) -> Sequence[Task]:
-        return await self._get_model_all(self.model, conditions=[self.model.user_id == user_id])
+        return await self._get_model_all(
+            self.model, conditions=[self.model.user_id == user_id]
+        )
 
     async def get_with_folder_user(self, task_id: int) -> Task | None:
         return await self._get_model_with(
             model=self.model,
-            options={'selectinload': [self.model.folder, self.model.user]},
-            conditions=[self.model.id == task_id]
+            options={"selectinload": [self.model.folder, self.model.user]},
+            conditions=[self.model.id == task_id],
         )
 
     async def get_all_with_folder_user(self) -> Sequence[Task]:
         return await self._get_model_with(
             model=self.model,
-            options={'selectinload': [self.model.folder, self.model.user]},
-            _all=True
+            options={"selectinload": [self.model.folder, self.model.user]},
+            _all=True,
         )

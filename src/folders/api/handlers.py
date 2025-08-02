@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 
 from core.repo import RequestRepo
 from core.utils import get_repo
+
 from ..schemas import FolderCreate, FolderRead
 
 router = APIRouter(
@@ -21,7 +22,8 @@ async def create_folder(folder_in: FolderCreate, repo: RequestRepo = Depends(get
 
 
 @router.get("/{folder_id}", response_model=FolderRead)
-async def get_folder(folder_id: int, repo: RequestRepo = Depends(get_repo)) -> FolderRead:
+async def get_folder(
+    folder_id: int, repo: RequestRepo = Depends(get_repo)
+) -> FolderRead:
     folder = await repo.folders.get(folder_id)
     return FolderRead.model_validate(folder, from_attributes=True)
-

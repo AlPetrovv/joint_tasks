@@ -1,10 +1,10 @@
 from typing import Any, Sequence
 
-from sqlalchemy import select, ScalarResult
+from sqlalchemy import ScalarResult, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
-from _types import TYPE_MODEL, MODEL
+from _types import MODEL, TYPE_MODEL
 
 
 class BaseRepo:
@@ -14,17 +14,16 @@ class BaseRepo:
         self.session = session
 
     async def _get_model(
-            self,
-            model: TYPE_MODEL,
-            model_id: int,
-            conditions: list[Any] = None
+        self, model: TYPE_MODEL, model_id: int, conditions: list[Any] = None
     ) -> MODEL | None:
         smtp = select(model).where(model.id == model_id)
         if conditions is not None:
             smtp = smtp.where(*conditions)
         return await self.session.scalar(smtp)
 
-    async def _get_model_all(self, model: TYPE_MODEL, conditions: list[Any] = None) -> Sequence[MODEL]:
+    async def _get_model_all(
+        self, model: TYPE_MODEL, conditions: list[Any] = None
+    ) -> Sequence[MODEL]:
         smtp = select(model)
         if conditions is not None:
             smtp = smtp.where(*conditions)
@@ -57,15 +56,15 @@ class BaseRepo:
         await self.session.commit()
 
     async def _get_model_with(
-            self,
-            model: TYPE_MODEL,
-            options: dict[str, list[Any]],
-            conditions: list[Any] = None,
-            _all: bool = None
+        self,
+        model: TYPE_MODEL,
+        options: dict[str, list[Any]],
+        conditions: list[Any] = None,
+        _all: bool = None,
     ) -> Sequence[MODEL] | MODEL | None:
         smtp = select(model).options(
-            *[selectinload(rel_model) for rel_model in options.get('selectinload', [])],
-            *[joinedload(rel_model) for rel_model in options.get('joinedload', [])]
+            *[selectinload(rel_model) for rel_model in options.get("selectinload", [])],
+            *[joinedload(rel_model) for rel_model in options.get("joinedload", [])],
         )
         if conditions is not None:
             smtp = smtp.where(*conditions)

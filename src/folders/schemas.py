@@ -17,8 +17,10 @@ class FolderRead(Folder):
 class FolderCreate(Folder):
     pass
 
+
 class FolderUpdate(Folder):
     id: int
+
 
 class FolderUpdatePartial(BaseModel):
     id: int

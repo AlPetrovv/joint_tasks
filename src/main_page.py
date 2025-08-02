@@ -15,23 +15,29 @@ router = APIRouter(
 
 
 @router.get("/", response_model=FastUI, response_model_exclude_none=True)
-async def main_page(request: Request, repo: RequestRepo = Depends(get_repo)) -> list[c.AnyComponent]:
-    if request.query_params.get('_method') == 'DELETE':
-        if announcement := await repo.announcements.get(int(request.query_params.get('announcement_id'))):
+async def main_page(
+    request: Request, repo: RequestRepo = Depends(get_repo)
+) -> list[c.AnyComponent]:
+    if request.query_params.get("_method") == "DELETE":
+        if announcement := await repo.announcements.get(
+            int(request.query_params.get("announcement_id"))
+        ):
             await repo.announcements.delete(announcement.id)  # fixme: type error
-    request.scope['query_string'] = urlencode({}).encode('utf-8')
+    request.scope["query_string"] = urlencode({}).encode("utf-8")
 
     announcements = await repo.announcements.get_all()
     announcements_in = [
-        announcement_schemas.AnnouncementRead.model_validate(announcement, from_attributes=True)
+        announcement_schemas.AnnouncementRead.model_validate(
+            announcement, from_attributes=True
+        )
         for announcement in announcements
     ]
     return [
         c.Page(
             components=[
-                get_heading('Главная'),
+                get_heading("Главная"),
                 get_navbar(),
-                get_announcement(announcements_in)
+                get_announcement(announcements_in),
             ]
         )
     ]

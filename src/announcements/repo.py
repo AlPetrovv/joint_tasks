@@ -1,4 +1,4 @@
-from typing import Sequence, Any
+from typing import Any, Sequence
 
 from announcements.models import Announcement
 from core.repo import BaseRepo
@@ -16,7 +16,6 @@ class AnnouncementRepo(BaseRepo):
     async def create(self, announcement_in) -> Announcement:
         return await self._create_model(self.model, announcement_in)
 
-    async def delete(self, announcement_id: int) -> None: # fixme
+    async def delete(self, announcement_id: int) -> None:  # fixme
         instance = await self._get_model(self.model, announcement_id)
         return await self._delete_model(instance)
-

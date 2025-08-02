@@ -9,4 +9,6 @@ class IDPKINTMixin:
 
 
 class CreatedAtMixin:
-    created_at: Mapped[dt.datetime] = mapped_column(default=dt.datetime.now, server_default=func.now())
+    created_at: Mapped[dt.datetime] = mapped_column(
+        default=dt.datetime.now, server_default=func.now()
+    )

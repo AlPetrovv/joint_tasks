@@ -60,5 +60,6 @@ class TaskUpdatePartial(BaseModel):
     user_id: Optional[int] = None
     folder_id: Optional[int] = None
 
+
 class TaskUser(TaskRead):
     user: UserRead

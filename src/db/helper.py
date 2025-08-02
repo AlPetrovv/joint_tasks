@@ -1,14 +1,17 @@
 from asyncio import current_task
 
-from sqlalchemy.ext.asyncio import (AsyncSession, async_scoped_session,
-                                    async_sessionmaker, create_async_engine)
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from config import settings
 
 
 class DBHalper:
     def __init__(self, db_url: str, echo: bool = False):
-
         self.engine = create_async_engine(
             url=db_url,
             echo=echo,
@@ -26,7 +29,6 @@ class DBHalper:
             return conn
 
     def get_scoped_session(self):
-
         """
         Return a scoped session.
 
@@ -52,12 +54,17 @@ class DBHalper:
         It creates a scoped session and yields it.
         After the session is used, it is removed.
         """
-        session = self.get_scoped_session()
-        yield session
-        await session.close()
 
+        async with self.session_factory() as session:
+            yield session
+        # session = self.get_scoped_session()
+        # yield session
+        # await session.close()
+
+    async def dispose(self):
+        await self.engine.dispose()
 
 db_helper = DBHalper(
-    db_url=settings.db_settings.url,
-    echo=settings.db_settings.echo,
+    db_url=settings.db.url,
+    echo=settings.db.echo,
 )

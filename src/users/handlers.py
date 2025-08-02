@@ -25,10 +25,14 @@ router = APIRouter(
 
 
 @form_router.get("/search_user", response_model=SelectSearchResponse)
-async def get_user_queries(repo: RequestRepo = Depends(get_repo)) -> SelectSearchResponse:
+async def get_user_queries(
+    repo: RequestRepo = Depends(get_repo),
+) -> SelectSearchResponse:
     users = await repo.users.get_all()
     users_in = [UserRead.model_validate(user, from_attributes=True) for user in users]
-    options = [{"label": user_in.username, "value": str(user_in.id)} for user_in in users_in]
+    options = [
+        {"label": user_in.username, "value": str(user_in.id)} for user_in in users_in
+    ]
     return SelectSearchResponse(options=options)
 
 
@@ -38,61 +42,66 @@ async def user_form() -> list[AnyComponent]:
         c.Page(
             components=[
                 get_navbar(),
-                get_heading('User Form'),
+                get_heading("User Form"),
                 c.ModelForm(
                     model=UserFormCreate,
-                    submit_url='/api/jt/users/create_user',
+                    submit_url="/api/jt/users/create_user",
                     method="POST",
-                    display_mode='page',
-                    initial={
-                        'phone_number': '+7'
-                    }
+                    display_mode="page",
+                    initial={"phone_number": "+7"},
                 ),
-            ])
+            ]
+        )
     ]
 
 
 @router.post("/create_user", response_model=FastUI, response_model_exclude_none=True)
-async def create_user(form: Annotated[UserFormCreate, fastui_form(UserFormCreate)],
-                      repo: RequestRepo = Depends(get_repo)) -> list[AnyComponent]:
+async def create_user(
+    form: Annotated[UserFormCreate, fastui_form(UserFormCreate)],
+    repo: RequestRepo = Depends(get_repo),
+) -> list[AnyComponent]:
     await repo.users.create(form)
     return [
-        c.Link(components=[c.Text(text='Back to me')], on_click=GoToEvent(url=f'/jt/users/{form.id}'),
-               class_name='btn btn-primary w-25'),
-        c.Text(text='Сотрудник был создан успешно'),
+        c.Link(
+            components=[c.Text(text="Back to me")],
+            on_click=GoToEvent(url=f"/jt/users/{form.id}"),
+            class_name="btn btn-primary w-25",
+        ),
+        c.Text(text="Сотрудник был создан успешно"),
     ]
 
 
 @router.get("/{user_id}", response_model=FastUI, response_model_exclude_none=True)
-async def get_user(user_id: int, repo: RequestRepo = Depends(get_repo)) -> list[
-    AnyComponent]:
+async def get_user(
+    user_id: int, repo: RequestRepo = Depends(get_repo)
+) -> list[AnyComponent]:
     user = await repo.users.get(user_id)
     if user is None:
         return [
             get_navbar(),
-            get_heading('User not found'),
+            get_heading("User not found"),
         ]
     user_in = UserRead.model_validate(user, from_attributes=True)
 
     return [
         get_navbar(),
-        get_heading('User'),
+        get_heading("User"),
         c.ModelForm(
             model=UserFormUpdatePartial,
-            submit_url='/api/jt/users/update_user',
+            submit_url="/api/jt/users/update_user",
             method="POST",
-            display_mode='page',
+            display_mode="page",
             initial=user_in.model_dump(),
-        )
+        ),
     ]
 
 
 @router.post("/update_user", response_model=FastUI, response_model_exclude_none=True)
 async def update_user(
-        form: Annotated[UserFormUpdatePartial, fastui_form(UserFormUpdatePartial)],
-        repo: RequestRepo = Depends(get_repo),
+    form: Annotated[UserFormUpdatePartial, fastui_form(UserFormUpdatePartial)],
+    repo: RequestRepo = Depends(get_repo),
 ) -> list[AnyComponent]:
     await repo.users.update_partial(form)
     return [
-        c.Text(text='Data was updated successfully'),
+        c.Text(text="Data was updated successfully"),
     ]

@@ -1,23 +1,51 @@
 import os.path
 import pathlib
-from typing import List
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASEDIR = pathlib.Path(__file__).parent
 
-class DatabaseSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=os.path.join(BASEDIR.as_posix(), '../envs/app.env'), extra='allow')
-    url: str = Field(alias="DATABASE_URL")
+
+class ApiV1(BaseModel):
+    prefix: str = "/v1"
+    auth: str = "/auth"
+
+
+class AccessToken(BaseModel):
+    lifetime_seconds: int = 3600
+    reset_password_token_secret: str
+    verification_token_secret: str
+
+
+class DatabaseSettings(BaseModel):
+    url: str
     echo: bool = True
-    time_zone: str = 'Asia/Novosibirsk'
+    echo_pool: bool = False
+    pool_size: int = 50
+    max_overflow: int = 10
+    naming_convention: dict[str, str] = Field(
+        default={
+            "ix": "ix_%(column_0_label)s",
+            "uq": "uq_%(table_name)s_%(column_0_N_name)s",
+            "ck": "ck_%(table_name)s_%(constraint_name)s",
+            "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        }
+    )
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=os.path.join(BASEDIR.as_posix(), '../envs/app.env'), extra='allow')
-    departments: List[str] = Field(alias="DEPARTMENTS")
-    db_settings: DatabaseSettings = DatabaseSettings()
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(BASEDIR.as_posix(), "../envs/app.env"),
+        extra="allow",
+        case_sensitive=False,
+        env_nested_delimiter="__",
+        env_prefix="APP_CONFIG__",
+    )
+    api: ApiV1 = ApiV1()
+    access_token: AccessToken
+    db: DatabaseSettings
 
 
 settings = Settings()

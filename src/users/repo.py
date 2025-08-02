@@ -1,4 +1,4 @@
-from typing import Sequence, Any
+from typing import Any, Sequence
 
 from core.repo import BaseRepo
 from users import User

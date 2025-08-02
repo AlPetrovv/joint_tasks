@@ -12,7 +12,9 @@ class Announcement(IDPKINTMixin, Base):
     title: Mapped[Optional[str]] = mapped_column(String(100), default="Объявление")
     text: Mapped[str] = mapped_column(String(1000))
     autor: Mapped[Optional[str]] = mapped_column(String(100))
-    date: Mapped[dt.datetime.date] = mapped_column(Date, default=dt.date.today, server_default=func.current_date())
+    date: Mapped[dt.datetime.date] = mapped_column(
+        Date, default=dt.date.today, server_default=func.current_date()
+    )
     important: Mapped[bool] = mapped_column(default=False, server_default=func.false())
 
     def __str__(self):

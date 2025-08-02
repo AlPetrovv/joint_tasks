@@ -11,7 +11,6 @@ async def get_repo() -> RequestRepo:
     yield RequestRepo(session=session)
 
 
-
 def set_decorator(decorator: Callable, *dec_args, **dec_kwargs) -> Callable:
     def wrapper(func: Callable) -> Callable:
         def wrapped(*args, **kwargs):
@@ -21,5 +20,3 @@ def set_decorator(decorator: Callable, *dec_args, **dec_kwargs) -> Callable:
         return wrapped
 
     return wrapper
-
-

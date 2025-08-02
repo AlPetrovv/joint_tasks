@@ -1,29 +1,35 @@
 import datetime as dt
 from typing import Optional
 
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, String, Enum
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.mixins import IDPKINTMixin
+from core.mixins.relations import (
+    FolderRelationMixin,
+    TaskRelationMixin,
+    UserRelationMixin,
+)
 from core.models import Base
-from core.mixins.relations import UserRelationMixin, FolderRelationMixin, TaskRelationMixin
 from enums import TaskPriorityEnum, TaskWhereEnum
 
 
 class Task(Base, IDPKINTMixin, UserRelationMixin, FolderRelationMixin, TaskRelationMixin):
     _user_options = {
-        'back_populates': 'tasks',
-        'on_delete': 'CASCADE',
-        'id_nullable': False,
+        "back_populates": "tasks",
+        "on_delete": "CASCADE",
+        "id_nullable": False,
+        "uselist": True
     }
     _folder_options = {
-        'back_populates': 'tasks',
-        'on_delete': 'CASCADE',
-        'id_nullable': False,
+        "back_populates": "tasks",
+        "on_delete": "CASCADE",
+        "id_nullable": False,
+        "uselist": True
     }
     _task_options = {
-        'back_populates': 'dependent_tasks',
-        'on_delete': 'SET NULL',
+        "on_delete": "SET NULL",
+        "id_nullable": True,
     }
     # data
     title: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -37,17 +43,16 @@ class Task(Base, IDPKINTMixin, UserRelationMixin, FolderRelationMixin, TaskRelat
 
     # status
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
-    priority: Mapped[TaskPriorityEnum] = mapped_column(Enum(TaskPriorityEnum), default=TaskPriorityEnum.low, server_default=TaskPriorityEnum.low.value)
-    where: Mapped[TaskWhereEnum] = mapped_column(Enum(TaskWhereEnum), default=TaskWhereEnum.home, server_default=TaskWhereEnum.home.value)
-
-    dependent_tasks: Mapped[list["Task"]] = relationship(
-        back_populates="task",
-        cascade="all, delete-orphan",
-        uselist=True,
-        remote_side="Task.id",
-        foreign_keys="Task.task",
+    priority: Mapped[TaskPriorityEnum] = mapped_column(
+        Enum(TaskPriorityEnum),
+        default=TaskPriorityEnum.low,
+        server_default=TaskPriorityEnum.low.value,
     )
-
+    where: Mapped[TaskWhereEnum] = mapped_column(
+        Enum(TaskWhereEnum),
+        default=TaskWhereEnum.home,
+        server_default=TaskWhereEnum.home.value,
+    )
 
     __table_args__ = (
         CheckConstraint(

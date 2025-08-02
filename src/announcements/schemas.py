@@ -15,11 +15,14 @@ class Announcement(BaseModel):
 class AnnouncementCreate(Announcement):
     pass
 
+
 class AnnouncementRead(Announcement):
     id: int
 
+
 class AnnouncementUpdate(Announcement):
     id: int
+
 
 class AnnouncementUpdatePartial(Announcement):
     id: int

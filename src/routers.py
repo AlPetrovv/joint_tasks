@@ -1,32 +1,31 @@
 from fastapi import APIRouter
 
-from fastapi_users import fastapi_users
-
-
 from announcements.api.handlers import router as announcements_api_router
 from announcements.handlers import form_router as announcements_form_router
 from announcements.handlers import router as announcements_router
-from tasks.api.handlers import router as tasks_api_router
-from tasks.handlers import form_router as tasks_form_router
-from tasks.handlers import router as tasks_router
-from users.api.handlers import router as users_api_router
-from users.handlers import form_router as users_form_router
-from users.handlers import router as users_router
+from config import settings
+
 from folders.api.handlers import router as folders_api_router
 from folders.handlers import form_router as folders_form_router
 from folders.handlers import router as folders_router
+
 from main_page import router as main_page_router
 
-router = APIRouter(
-    prefix="/api/jt",
-)
+from tasks.api.handlers import router as tasks_api_router
+from tasks.handlers import form_router as tasks_form_router
+from tasks.handlers import router as tasks_router
 
-form_router = APIRouter(
-    prefix="/api/jt",
-)
-api_router = APIRouter(
-    prefix="/api",
-)
+from users.api.handlers import router as users_api_router
+from users.handlers import form_router as users_form_router
+from users.handlers import router as users_router
+from users_auth.handlers import auth_router as fastapi_users_auth_router
+
+router = APIRouter(prefix="/api/jt")
+form_router = APIRouter(prefix="/api/jt")
+api_router = APIRouter(prefix="/api")
+auth_router = APIRouter(prefix=settings.api.prefix)
+
+auth_router.include_router(fastapi_users_auth_router)
 
 form_router.include_router(tasks_form_router)
 form_router.include_router(users_form_router)

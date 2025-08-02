@@ -27,5 +27,3 @@ class RequestRepo:
     @property
     def users(self) -> UserRepo:
         return UserRepo(session=self.session)
-
-
