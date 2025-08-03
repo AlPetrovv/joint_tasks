@@ -48,7 +48,7 @@ async def get_tasks(repo: RequestRepo = Depends(get_repo)):
                         Display(
                             value="user.username",
                             title="User",
-                            on_click=GoToEvent(url="/jt/users/{user.id}"),
+                            on_click=GoToEvent(url="/jt/profiles/{user.id}"),
                         ),
                         DisplayLookup(
                             field="start_time",
@@ -146,7 +146,7 @@ async def get_task(
                         Display(
                             value=task_in.user.username,
                             title="User",
-                            on_click=GoToEvent(url=f"/jt/users/{task_in.user.id}"),
+                            on_click=GoToEvent(url=f"/jt/profiles/{task_in.user.id}"),
                         ),
                         DisplayLookup(
                             field="start_time",

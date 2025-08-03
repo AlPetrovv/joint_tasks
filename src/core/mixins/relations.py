@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING, Any, Union
-from uuid import UUID
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
@@ -8,7 +7,7 @@ from core.schemas import RelationOptions
 from db.utils import camel_case_to_snake_case
 
 if TYPE_CHECKING:
-    from db.all_models import AuthUser, Folder, Task, User
+    from db.all_models import Profile, Folder, Task, Profile, User
 
 
 class RelationMixin:
@@ -23,9 +22,7 @@ class RelationMixin:
         return getattr(cls, f"_{camel_case_to_snake_case(model)}_foreign_key".lower())
 
     @classmethod
-    def _model_relation(
-        cls, model: Any
-    ) -> Mapped[Union["Task", "User", "Folder", "AuthUser"]]:
+    def _model_relation(cls, model: Any) -> Mapped[Union["Task", "Profile", "Folder", "Profile", "User"]]:
         rel_options = cls.__get_options(model)
         return relationship(
             model,
@@ -48,57 +45,53 @@ class RelationMixin:
         )
 
 
-class UserRelationMixin(RelationMixin):
-    __user_model: str = "User"
-    _user_foreign_key: str = "users.id"
-    _user_options: dict = {}
+class ProfileRelationMixin(RelationMixin):
+    _profile_foreign_key: str = "profiles.id"
+    _profile_options: dict = {}
 
     @declared_attr
-    def user_id(cls) -> Mapped[int]:
-        return cls._model_relation_id(model=cls.__user_model)
+    def profile_id(cls) -> Mapped[int]:
+        return cls._model_relation_id(model="Profile")
 
     @declared_attr
-    def user(cls) -> Mapped["User"]:
-        return cls._model_relation(model=cls.__user_model)
+    def profile(cls) -> Mapped["Profile"]:
+        return cls._model_relation(model="Profile")
 
 
 class FolderRelationMixin(RelationMixin):
-    __folder_model: str = "Folder"
     _folder_foreign_key: str = "folders.id"
     _folder_options: dict = {}
 
     @declared_attr
     def folder_id(cls) -> Mapped[int]:
-        return cls._model_relation_id(model=cls.__folder_model)
+        return cls._model_relation_id(model="Folder")
 
     @declared_attr
     def folder(cls) -> Mapped["Folder"]:
-        return cls._model_relation(model=cls.__folder_model)
+        return cls._model_relation(model="Folder")
 
 
 class TaskRelationMixin(RelationMixin):
-    __task_model: str = "Task"
     _task_foreign_key: str = "tasks.id"
     _task_options: dict = {}
 
     @declared_attr
     def task_id(cls) -> Mapped[int]:
-        return cls._model_relation_id(model=cls.__task_model)
+        return cls._model_relation_id(model="Task")
 
     @declared_attr
     def task(cls) -> Mapped["Task"]:
-        return cls._model_relation(model=cls.__task_model)
+        return cls._model_relation(model="Task")
 
 
-class AuthUserRelationMixin(RelationMixin):
-    __auth_user_model: str = "AuthUser"
-    _auth_user_foreign_key: str = "auth_users.id"
-    _auth_user_options: dict = {}
-
-    @declared_attr
-    def auth_user_id(cls) -> Mapped[int]:
-        return cls._model_relation_id(model=cls.__auth_user_model)
+class UserRelationMixin(RelationMixin):
+    _user_foreign_key: str = "users.id"
+    _user_options: dict = {}
 
     @declared_attr
-    def auth_user(cls) -> Mapped["AuthUser"]:
-        return cls._model_relation(model=cls.__auth_user_model)
+    def user_id(cls) -> Mapped[int]:
+        return cls._model_relation_id(model="User")
+
+    @declared_attr
+    def user(cls) -> Mapped["User"]:
+        return cls._model_relation(model="User")

@@ -3,16 +3,16 @@ from typing import Annotated, Optional
 from pydantic import Field, field_validator
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
-from users.schemas import User, UserCreate, UserUpdatePartial
+from .schemas import Profile, ProfileCreate, ProfileUpdatePartial
 
 PhoneNumber.phone_format = "INTERNATIONAL"
 
 
-class UserSelectForm(User):
-    user: str = Field(json_schema_extra={"search_url": "/api/jt/users/search_user"})
+class ProfileSelectForm(Profile):
+    user: str = Field(json_schema_extra={"search_url": "/api/jt/profiles/search_user"})
 
 
-class UserFormCreate(UserCreate):
+class ProfileFormCreate(ProfileCreate):
     phone_number: Annotated[str, Field(max_length=17)]
 
     @field_validator("phone_number", mode="before")
@@ -25,7 +25,7 @@ class UserFormCreate(UserCreate):
         return phone_number
 
 
-class UserFormUpdatePartial(UserUpdatePartial):
+class ProfileFormUpdatePartial(ProfileUpdatePartial):
     phone_number: Optional[
         Annotated[str, Field(max_length=17, title="Номер телефона +7...")]
     ]

@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from enums import TaskPriorityEnum, TaskWhereEnum
-from users.schemas import UserRead
+from profiles.schemas import ProfileRead
 
 
 class Task(BaseModel):
@@ -62,4 +62,4 @@ class TaskUpdatePartial(BaseModel):
 
 
 class TaskUser(TaskRead):
-    user: UserRead
+    user: ProfileRead

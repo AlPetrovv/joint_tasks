@@ -15,10 +15,10 @@ from tasks.api.handlers import router as tasks_api_router
 from tasks.handlers import form_router as tasks_form_router
 from tasks.handlers import router as tasks_router
 
-from users.api.handlers import router as users_api_router
-from users.handlers import form_router as users_form_router
-from users.handlers import router as users_router
-from users_auth.handlers import auth_router as fastapi_users_auth_router
+from profiles.api.handlers import router as users_api_router
+from profiles.handlers import form_router as users_form_router
+from profiles.handlers import router as users_router
+from users.handlers import auth_router as fastapi_users_auth_router
 
 router = APIRouter(prefix="/api/jt")
 form_router = APIRouter(prefix="/api/jt")

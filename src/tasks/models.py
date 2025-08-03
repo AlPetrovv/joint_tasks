@@ -8,35 +8,30 @@ from core.mixins import IDPKINTMixin
 from core.mixins.relations import (
     FolderRelationMixin,
     TaskRelationMixin,
-    UserRelationMixin,
+    ProfileRelationMixin,
 )
 from core.models import Base
 from enums import TaskPriorityEnum, TaskWhereEnum
 
 
-class Task(Base, IDPKINTMixin, UserRelationMixin, FolderRelationMixin, TaskRelationMixin):
-    _user_options = {
+class Task(Base, IDPKINTMixin, ProfileRelationMixin, FolderRelationMixin, TaskRelationMixin):
+    _profile_options = {
         "back_populates": "tasks",
-        "on_delete": "CASCADE",
         "id_nullable": False,
-        "uselist": True
     }
     _folder_options = {
         "back_populates": "tasks",
-        "on_delete": "CASCADE",
         "id_nullable": False,
-        "uselist": True
     }
     _task_options = {
         "on_delete": "SET NULL",
-        "id_nullable": True,
     }
     # data
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     text: Mapped[str] = mapped_column(String(1000), nullable=False)
     note: Mapped[Optional[str]] = mapped_column(String(1000))
 
-    # time
+    # date
     start_time: Mapped[dt.date] = mapped_column(Date)
     end_time: Mapped[dt.date] = mapped_column(Date)
     completed_time: Mapped[Optional[dt.datetime]] = mapped_column(DateTime)

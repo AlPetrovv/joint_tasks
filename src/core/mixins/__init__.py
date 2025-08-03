@@ -1,6 +1,6 @@
 from .mixins import CreatedAtMixin, IDPKINTMixin
 from .relations import (
-    AuthUserRelationMixin,
+    ProfileRelationMixin,
     FolderRelationMixin,
     RelationMixin,
     TaskRelationMixin,
@@ -11,8 +11,8 @@ __all__ = [
     "IDPKINTMixin",
     "CreatedAtMixin",
     "RelationMixin",
-    "UserRelationMixin",
+    "ProfileRelationMixin",
     "FolderRelationMixin",
     "TaskRelationMixin",
-    "AuthUserRelationMixin",
+    "UserRelationMixin",
 ]

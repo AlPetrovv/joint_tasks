@@ -1,13 +1,17 @@
-from typing import Annotated, TYPE_CHECKING
+import secrets
+from datetime import datetime, timezone, timedelta
+from typing import Annotated, TYPE_CHECKING, Any, Optional
 
 from fastapi import Depends
+from fastapi_users import models, BaseUserManager, exceptions
 from fastapi_users.authentication.strategy.db import DatabaseStrategy
 from config import settings
-from users_auth.authentication.dependencies import get_access_token_repo
+from users.authentication.dependencies import get_access_token_repo
 
 if TYPE_CHECKING:
-    from users_auth.models import AccessToken
+    from users.models import AccessToken
     from fastapi_users.authentication.strategy.db import AccessTokenDatabase
+
 
 
 def get_database_strategy(

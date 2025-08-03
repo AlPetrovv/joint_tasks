@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from announcements.repo import AnnouncementRepo
 from folders.repo import FolderRepo
 from tasks.repo import TaskRepo
-from users.repo import UserRepo
+from profiles.repo import ProfileRepo
 
 
 @dataclass
@@ -25,5 +25,5 @@ class RequestRepo:
         return FolderRepo(session=self.session)
 
     @property
-    def users(self) -> UserRepo:
-        return UserRepo(session=self.session)
+    def profiles(self) -> ProfileRepo:
+        return ProfileRepo(session=self.session)
